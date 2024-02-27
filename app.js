@@ -183,6 +183,7 @@ app.post("/api/user/placeOrders", validation.orderItemsValidation, (req, res) =>
   }
 });
 
+// View multiple grocery items in a single order
 app.get("/api/user/order/:id", (req, res) => {
     try {
       const id = req.params.id;
@@ -193,7 +194,15 @@ app.get("/api/user/order/:id", (req, res) => {
               console.error(error);
               res.status(500).send("Error in Fetching Data");
             } else {
-              res.status(200).json(data);
+              sqlQuery2 = 'select item.itemName, item.price, orderitems.quantity from orderitems join item on orderitems.itemId = item.itemId';
+              connection.query(sqlQuery2, function (error, data, fields) {
+                if (error) {
+                  console.error(error);
+                  res.status(500).send("Error in Fetching Data");
+                } else {
+                  res.status(200).json(data);
+                }});
+              
             }
           });
         } catch (error) {
